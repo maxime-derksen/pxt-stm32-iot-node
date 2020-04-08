@@ -1,0 +1,15 @@
+{
+    "name": "distanceHC-SR04",
+    "description": "A distance sensor driver",
+    "files": [
+        "README.md",
+        "distanceHC-SR04.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": true,
+    "dependencies": {
+        "core": "file:../core"
+    }
+}
