@@ -21,9 +21,17 @@ enum PingUnit {
 
 
 namespace pxt {
-    //SINGLETON(WDistance);
+    class WDistance {
+        public:
+          codal.STM32IotNodeDistance sensor;
+          WDistance(): sensor() {
+            sensor.init();
+          }
+
+    SINGLETON(WDistance);
     }
-    
+}
+
 namespace input {
 
     /**
@@ -33,7 +41,7 @@ namespace input {
     * @param unit desired conversion unit
     * @param maxCmDistance maximum distance in centimeters (default is 500)
     */
-    function ping(trig: DigitalPin, echo: DigitalPin, unit: PingUnit, maxCmDistance = 500): number {
+    function ping(trig: DigitalPin, echo: DigitalPin, unit: PingUnit, maxCmDistance = 500) : number {
     
 
         // send pulse
@@ -45,9 +53,10 @@ namespace input {
         pins.digitalWritePin(trig, 0);
 
         // read pulse   
-        const d = pins.pulseIn(echo, PulseValue.High, maxCmDistance * 58);
+        const distance = pins.pulseIn(echo, PulseValue.High, maxCmDistance * 58);
 
-    
+        int d
+            
             switch (unit) {
                 case PingUnit.Millimeter:
                     d = distance;
@@ -66,11 +75,11 @@ namespace input {
                     break;
             }
 
-            if (condition == DistanceHCSR04Condition.Near)
-                sensor.setLowThreshold(d)
-            else
-                sensor.setHighThreshold(d)
-            registerWithDal(sensor.id, (int)condition, handler)
+        if (condition == DistanceHCSR04Condition.Near)
+            sensor.setLowThreshold(d);
+        else
+            sensor.setHighThreshold(d);
+        registerWithDal(sensor.id, (int)condition, handler);
         }
 
         /**
@@ -82,19 +91,19 @@ namespace input {
         //% weight=26
         function distance(unit: PingUnit): number {
     
-            int distance = getWDistance().sensor.getValue();
+            int distance = getWDistance().sensor.getValue()
     
             switch (unit) {
                 case PingUnit.Millimeter:
-                    return distance
+                    return distance;
                 case PingUnit.Centimeter:
-                    return distance / 10.
+                    return distance / 10.;
                 case PingUnit.Decimeter:
-                    return distance / 100.
+                    return distance / 100.;
                 case PingUnit.Meter:
-                    return distance / 1000.
+                    return distance / 1000.;
                 default:
-                    return 0
+                    return 0;
             }
         }
     }
