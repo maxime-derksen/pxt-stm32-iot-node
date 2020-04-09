@@ -1,4 +1,7 @@
-enum DistanceUnitSonar {
+/**
+* Different units available for the distance (mm, cm (ref), dm, m)
+*/
+enum DistanceUnitSonar {   
     //% block="mm"
     Millimeter,
     //% block="cm"
@@ -10,34 +13,36 @@ enum DistanceUnitSonar {
 }
 
 
+
+
 namespace input {
 
-    const MAX_ULTRASONIC_TRAVEL_TIME = 300 * DistanceUnitSonar.Centimeter;
-    const ULTRASONIC_MEASUREMENTS = 3;
+    const MAX_SONAR_TRAVEL_TIME = 300 * DistanceUnitSonar.Centimeter;
+    const SONAR_MEASUREMENTS = 3;
 
     interface SonarRoundTrip {
-        travel : number;     //travel
-        rtn : number;        //return
+        travel: number;     //travel
+        rtn: number;        //return
     }
     
-    interface SonarDevice {
-        trig : DigitalPin;
+    interface Sonar {
+        trig: DigitalPin;
         roundTrips: SonarRoundTrip[];
         medianRoundTrip: number;
     }
     
-    let sonarDevice: SonarDevice;
+    let sonar: Sonar;
     
 
     /**
-     * Configures the ultrasonic distance sensor and measures continuously in the background.
-     * @param trig pin connected to trig, eg: DigitalPin.P5
-     * @param echo pin connected to echo, eg: DigitalPin.P8
+     * Configures the sonar and measures continuously in the background.
+     * @param trig tigger pin, eg: DigitalPin.P5
+     * @param echo echo pin, eg: DigitalPin.P8
      * @param unit desired conversion unit
      */
-    //% subcategory="Ultrasonic"
-    //% blockId="makerbit_ultrasonic_connect"
-    //% block="connect ultrasonic distance sensor | with Trig at %trig | and Echo at %echo"
+    //% subcategory="Sonar"
+    //% blockId="sonar_connect"
+    //% block="connect sonar distance sensor | with Trig at %trig | and Echo at %echo"
     //% trig.fieldEditor="gridpicker"
     //% trig.fieldOptions.columns=4
     //% trig.fieldOptions.tooltips="false"
@@ -46,81 +51,111 @@ namespace input {
     //% echo.fieldOptions.tooltips="false"
     //% weight=80
 
-    function connectUltrasonicDistanceSensor(trig: DigitalPin, echo: DigitalPin, unit : DistanceUnitSonar): void {
-        if (sonarDevice) {
-        return;
+    function connectUltrasonicDistanceSensor(trig: DigitalPin, echo: DigitalPin, unit: DistanceUnitSonar): void {
+        if (sonar) {
+            return;
         }
-
-        int d
-            
-            switch (unit) {
-                case DistanceUnitSonar.Millimeter:
-                    d = distance;
-                    break;
-                case DistanceUnitSonar.Centimeter:
-                    d = distance * 10;
-                    break;
-                case PingUnit.Decimeter:
-                    d = distance * 100;
-                    break;
-                case PingUnit.Meter:
-                    d = distance * 1000;
-                    break;
-                default:
-                    d = 0;
-                    break;
+        
+        sonar = {
+            trig: trig,
+            roundTrips: [{ travel: 0, rtn: MAX_SONAR_TRAVEL_TIME }],
+            medianRoundTrip: MAX_SONAR_TRAVEL_TIME
+        };
+      
+        pins.onPulsed(echo, PulseValue.High, () => {
+            if (pins.pulseDuration() < MAX_SONAR_TRAVEL_TIME && sonar.roundTrips.length <= SONAR_MEASUREMENTS) {
+                sonar.roundTrips.push({ travel: input.runningTime(), rtn: pins.pulseDuration() });
             }
+        });
 
     }
 
     /**
-    * Returns the distance to an object in a range from 1 to 300 centimeters or up to 118 inch.
+    * Returns the distance to an object in a range from 1 to 300 centimeters.
     * The maximum value is returned to indicate when no object was detected.
     * -1 is returned when the device is not connected.
-    * @param unit unit of distance, eg: DistanceUnit.CM
+    * @param unit unit of distance (mm, cm, dm, m).
     */
-    //% subcategory="Ultrasonic"
-    //% blockId="makerbit_ultrasonic_distance"
-    //% block="ultrasonic distance in %unit"
+    //% subcategory="Sonar"
+    //% blockId="sonar_distance"
+    //% block="sonar distance in %unit"
     //% weight=60
     
     function getSonarDistance(unit: DistanceUnitSonar): number {
-    if (!sonarDevice) {
-      return -1;
-    }
+
+        if (!sonar) {
+            return -1;
+        }
     
-    
-    switch (unit) {
-        case DistanceUnitSonar.Centimeter:
-            return Math.idiv(sonarDevice.medianRoundTrip, unit);
-        case DistanceUnitSonar.Millimeter:
-            return Math.idiv(sonarDevice.medianRoundTrip, unit) * 10.;
-        case DistanceUnitSonar.Decimeter:
-            return Math.idiv(sonarDevice.medianRoundTrip, unit) / 100.;
-        case DistanceUnitSonar.Meter:
-            return Math.idiv(sonarDevice.medianRoundTrip, unit) / 1000.;
-        default:
-            return 0;
-    }
+        switch (unit) {
+            case DistanceUnitSonar.Centimeter:
+                return Math.idiv(sonar.medianRoundTrip, unit);
+            case DistanceUnitSonar.Millimeter:
+                return Math.idiv(sonar.medianRoundTrip, unit) * 10.;
+            case DistanceUnitSonar.Decimeter:
+                return Math.idiv(sonar.medianRoundTrip, unit) / 100.;
+            case DistanceUnitSonar.Meter:
+                return Math.idiv(sonar.medianRoundTrip, unit) / 1000.;
+            default:
+                return 0;
+        }
     }
 
     /**
     * Returns `true` if an object is within the specified distance. `false` otherwise.
     *
     * @param distance distance to object, eg: 10
-    * @param unit unit of distance, eg: DistanceUnit.CM
+    * @param unit unit of distance, eg: DistanceUnit.Centimeter
     */
-    //% subcategory="Ultrasonic"
-    //% blockId="makerbit_ultrasonic_less_than"
-    //% block="ultrasonic distance is less than |%distance|%unit"
+    //% subcategory="Sonar"
+    //% blockId="sonar_less_than"
+    //% block="sonar less than |%distance|%unit"
     //% weight=50
     
-    function isSonarInRange(distance: number,unit: DistanceUnit): boolean {
-        if (!sonarDevice) {
+    function isSonarLessThan(distance: number, unit: DistanceUnitSonar): boolean {
+        if (!sonar) {
             return false;
         } else {
-            return Math.idiv(sonarDevice.medianRoundTrip, unit) < distance;
+            return Math.idiv(sonar.medianRoundTrip, unit) < distance;
         }
+    }
+
+
+    /**
+    * Measure 
+    */
+    
+    function triggerPulse() {
+        // Reset trigger pin
+        pins.setPull(sonar.trig, PinPullMode.PullNone);
+        pins.digitalWritePin(sonar.trig, 0);
+        control.waitMicros(2);
+    
+        // Trigger pulse
+        pins.digitalWritePin(sonar.trig, 1);
+        control.waitMicros(10);
+        pins.digitalWritePin(sonar.trig, 0);
+    }
+    
+
+    /**
+    * Run some code when the distance is more or less than the previous one.
+    * @param distance the distance at which this event happens, eg: 15
+    * @param unit the unit of the distance
+    */
+    //% blockId=input_on_distance_condition_changed block="on distance %condition|at %distance|%unit"
+    //% parts="distance"
+    //% help=input/on-distance-condition-changed blockExternalInputs=0
+    //% group="More" weight=76
+    function onSonarDistanceChanged(distance: number, unit: DistanceUnitSonar, handler: () => void): void {
+    
+        distance = getSonarDistance(unit);
+        
+        triggerPulse();
+
+        if (isSonarLessThan(distance, unit)) {
+            
+        }      
     }
 }
 
