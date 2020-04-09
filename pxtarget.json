@@ -17,7 +17,7 @@
         "libs/pressure",
         "libs/accelerometer",
         "libs/distance",
-        "libs/distanceHC-SR04",
+        "libs/distanceSonar",
         "libs/storage",
         "libs/jacdac",
         "libs/jacdac-drivers",

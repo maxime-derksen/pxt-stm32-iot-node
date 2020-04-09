@@ -42,7 +42,7 @@ namespace input {
      */
     //% subcategory="Sonar"
     //% blockId="sonar_connect"
-    //% block="connect sonar distance sensor | with Trig at %trig | and Echo at %echo"
+    //% block="connect sonar | with Trig at %trig | and Echo at %echo"
     //% trig.fieldEditor="gridpicker"
     //% trig.fieldOptions.columns=4
     //% trig.fieldOptions.tooltips="false"
@@ -51,7 +51,7 @@ namespace input {
     //% echo.fieldOptions.tooltips="false"
     //% weight=80
 
-    function connectUltrasonicDistanceSensor(trig: DigitalPin, echo: DigitalPin, unit: DistanceUnitSonar): void {
+    function connectSonar(trig: DigitalPin, echo: DigitalPin, unit: DistanceUnitSonar): void {
         if (sonar) {
             return;
         }
@@ -122,7 +122,7 @@ namespace input {
 
 
     /**
-    * Measure 
+    * Reset and trigger a pulse.
     */
     
     function triggerPulse() {
@@ -136,7 +136,41 @@ namespace input {
         control.waitMicros(10);
         pins.digitalWritePin(sonar.trig, 0);
     }
+
+
+    // Returns median value of non-empty input
+    function median(values: number[]) {
+        values.sort( (a, b) => {return a - b;} );
+            return values[(values.length - 1) >> 1];
+        }
+
+    function measureInBackground() {
+        const trips = sonar.roundTrips;
+        const TIME_BETWEEN_PULSE_MS = 145;
     
+        while (true) {
+            const time = input.runningTime();
+        
+            if (trips[trips.length - 1].travel < time - TIME_BETWEEN_PULSE_MS - 10) {
+                sonar.roundTrips.push({travel : time, rtn : MAX_SONAR_TRAVEL_TIME});
+            }
+        
+            while (trips.length > SONAR_MEASUREMENTS) {
+                trips.shift();
+            }
+        
+            sonar.medianRoundTrip = getMedianRTT(sonar.roundTrips);
+            triggerPulse();
+
+    /**
+    * Get the median of the round trip times.
+    * 
+    */
+    function getMedianRTT(roundTrips : SonarRoundTrip[]) {
+        const roundTripTimes = roundTrips.map(urt => urt.rtn);
+        return median(roundTripTimes);
+        }
+            
 
     /**
     * Run some code when the distance is more or less than the previous one.
@@ -148,13 +182,11 @@ namespace input {
     //% help=input/on-distance-condition-changed blockExternalInputs=0
     //% group="More" weight=76
     function onSonarDistanceChanged(distance: number, unit: DistanceUnitSonar, handler: () => void): void {
-    
-        distance = getSonarDistance(unit);
         
         triggerPulse();
 
         if (isSonarLessThan(distance, unit)) {
-            
+           //update
         }      
     }
 }
