@@ -1,0 +1,13 @@
+{
+    "name": "Sans titre",
+    "dependencies": {
+        "stm32-iot-node": "*",
+        "distanceSonar": "*"
+    },
+    "description": "",
+    "files": [
+        "main.blocks",
+        "main.ts",
+        "README.md"
+    ]
+}

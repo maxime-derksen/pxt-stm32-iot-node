@@ -14,8 +14,7 @@ enum DistanceUnitSonar {
 
 
 
-
-namespace input {
+namespace input {   //bloc entrée
 
     const MAX_SONAR_TRAVEL_TIME = 300 * DistanceUnitSonar.Centimeter;
     const SONAR_MEASUREMENTS = 3;
@@ -35,7 +34,7 @@ namespace input {
     
 
     /**
-     * Configures the sonar and measures continuously in the background.
+     * Configures the sonar
      * @param trig tigger pin, eg: DigitalPin.P5
      * @param echo echo pin, eg: DigitalPin.P8
      * @param unit desired conversion unit
@@ -67,7 +66,7 @@ namespace input {
                 sonar.roundTrips.push({ travel: input.runningTime(), rtn: pins.pulseDuration() });
             }
         });
-
+        
     }
 
     /**
@@ -108,11 +107,11 @@ namespace input {
     * @param unit unit of distance, eg: DistanceUnit.Centimeter
     */
     //% subcategory="Sonar"
-    //% blockId="sonar_less_than"
+    //% blockId="sonar_distance_less_than"
     //% block="sonar less than |%distance|%unit"
     //% weight=50
     
-    function isSonarLessThan(distance: number, unit: DistanceUnitSonar): boolean {
+    function isSonarDistanceLessThan(distance: number, unit: DistanceUnitSonar): boolean {
         if (!sonar) {
             return false;
         } else {
@@ -138,56 +137,30 @@ namespace input {
     }
 
 
-    // Returns median value of non-empty input
-    function median(values: number[]) {
-        values.sort( (a, b) => {return a - b;} );
-            return values[(values.length - 1) >> 1];
-        }
-
-    function measureInBackground() {
-        const trips = sonar.roundTrips;
-        const TIME_BETWEEN_PULSE_MS = 145;
     
-        while (true) {
-            const time = input.runningTime();
-        
-            if (trips[trips.length - 1].travel < time - TIME_BETWEEN_PULSE_MS - 10) {
-                sonar.roundTrips.push({travel : time, rtn : MAX_SONAR_TRAVEL_TIME});
-            }
-        
-            while (trips.length > SONAR_MEASUREMENTS) {
-                trips.shift();
-            }
-        
-            sonar.medianRoundTrip = getMedianRTT(sonar.roundTrips);
-            triggerPulse();
-
-    /**
-    * Get the median of the round trip times.
-    * 
-    */
-    function getMedianRTT(roundTrips : SonarRoundTrip[]) {
-        const roundTripTimes = roundTrips.map(urt => urt.rtn);
-        return median(roundTripTimes);
-        }
-            
 
     /**
     * Run some code when the distance is more or less than the previous one.
     * @param distance the distance at which this event happens, eg: 15
     * @param unit the unit of the distance
     */
-    //% blockId=input_on_distance_condition_changed block="on distance %condition|at %distance|%unit"
-    //% parts="distance"
-    //% help=input/on-distance-condition-changed blockExternalInputs=0
+    //% blockId=input_on_sonar_distance_changed block="on distance sonar %distance|%unit"
+    //% parts="distance sonar"
+    //% help=input/on-sonar-distance-condition-changed blockExternalInputs=0
     //% group="More" weight=76
     function onSonarDistanceChanged(distance: number, unit: DistanceUnitSonar, handler: () => void): void {
-        
-        triggerPulse();
 
-        if (isSonarLessThan(distance, unit)) {
-           //update
-        }      
+        triggerPulse();
+        distance = getSonarDistance(unit);
+
+        if (isSonarDistanceLessThan(distance, unit)) {
+            //update
+        } else {
+            //update
+        }
     }
 }
+
+
+    
 

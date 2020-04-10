@@ -17,6 +17,7 @@
         "libs/pressure",
         "libs/accelerometer",
         "libs/distance",
+        "libs/distance2",
         "libs/distanceSonar",
         "libs/storage",
         "libs/jacdac",
