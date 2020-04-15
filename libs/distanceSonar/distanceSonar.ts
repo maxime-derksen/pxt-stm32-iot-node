@@ -12,6 +12,13 @@ enum DistanceUnitSonar {
     Meter
 }
 
+enum HigherOrLower {
+    //% block=">"
+    Higher,
+    //% block="<"
+    Lower
+}
+
 
 
 namespace input {   //bloc entrée
@@ -39,16 +46,7 @@ namespace input {   //bloc entrée
      * @param echo echo pin, eg: DigitalPin.P8
      * @param unit desired conversion unit
      */
-    //% subcategory="Sonar"
-    //% blockId="sonar_connect"
-    //% block="connect sonar | with Trig at %trig | and Echo at %echo"
-    //% trig.fieldEditor="gridpicker"
-    //% trig.fieldOptions.columns=4
-    //% trig.fieldOptions.tooltips="false"
-    //% echo.fieldEditor="gridpicker"
-    //% echo.fieldOptions.columns=4
-    //% echo.fieldOptions.tooltips="false"
-    //% weight=80
+    
 
     function connectSonar(trig: DigitalPin, echo: DigitalPin, unit: DistanceUnitSonar): void {
         if (sonar) {
@@ -75,10 +73,7 @@ namespace input {   //bloc entrée
     * -1 is returned when the device is not connected.
     * @param unit unit of distance (mm, cm, dm, m).
     */
-    //% subcategory="Sonar"
-    //% blockId="sonar_distance"
-    //% block="sonar distance in %unit"
-    //% weight=60
+
     
     function getSonarDistance(unit: DistanceUnitSonar): number {
 
@@ -104,12 +99,8 @@ namespace input {   //bloc entrée
     * Returns `true` if an object is within the specified distance. `false` otherwise.
     *
     * @param distance distance to object, eg: 10
-    * @param unit unit of distance, eg: DistanceUnit.Centimeter
+    * @param unit unit of distance, eg: DistanceUnitSonar.Centimeter
     */
-    //% subcategory="Sonar"
-    //% blockId="sonar_distance_less_than"
-    //% block="sonar less than |%distance|%unit"
-    //% weight=50
     
     function isSonarDistanceLessThan(distance: number, unit: DistanceUnitSonar): boolean {
         if (!sonar) {
@@ -139,24 +130,27 @@ namespace input {   //bloc entrée
 
     
 
-    /**
+     /**
     * Run some code when the distance is more or less than the previous one.
+    * @param chevron higher or lower
     * @param distance the distance at which this event happens, eg: 15
     * @param unit the unit of the distance
     */
-    //% blockId=input_on_sonar_distance_changed block="on distance sonar %distance|%unit"
+    //% blockId=input_on_sonar_distance_changed block="lorsque la distance du sonar est %chevron à %distance|%unit"
     //% parts="distance sonar"
     //% help=input/on-sonar-distance-condition-changed blockExternalInputs=0
-    //% group="More" weight=76
-    function onSonarDistanceChanged(distance: number, unit: DistanceUnitSonar, handler: () => void): void {
+    //% group="More" weight=76 color=#ff1493
+    function onSonarDistanceChanged(chevron: HigherOrLower, distance: number, unit: DistanceUnitSonar, handler: () => void): void {
 
         triggerPulse();
         distance = getSonarDistance(unit);
 
-        if (isSonarDistanceLessThan(distance, unit)) {
-            //update
-        } else {
-            //update
+        if (chevron === HigherOrLower.Lower) {
+            isSonarDistanceLessThan(distance, unit) = true;
+        } 
+
+        if (chevron === HigherOrLower.Higher) {
+            isSonarDistanceLessThan(distance, unit) = false;
         }
     }
 }
