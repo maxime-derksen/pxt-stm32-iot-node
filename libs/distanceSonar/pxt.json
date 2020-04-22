@@ -3,9 +3,7 @@
     "description": "Distance measurement with a sonar driver (HC-SR04)",
     "files": [
         "README.md",
-        "distanceSonar.ts",
-        "enums.d.ts",
-        "shims.d.ts"
+        "distanceSonar.ts"
     ],
     "testFiles": [
         "test.ts"

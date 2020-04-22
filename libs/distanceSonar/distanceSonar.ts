@@ -58,13 +58,13 @@ namespace input {   //bloc entrée
             roundTrips: [{ travel: 0, rtn: MAX_SONAR_TRAVEL_TIME }],
             medianRoundTrip: MAX_SONAR_TRAVEL_TIME
         };
-      
+      /*
         pins.onPulsed(echo, PulseValue.High, () => {
             if (pins.pulseDuration() < MAX_SONAR_TRAVEL_TIME && sonar.roundTrips.length <= SONAR_MEASUREMENTS) {
                 sonar.roundTrips.push({ travel: input.runningTime(), rtn: pins.pulseDuration() });
             }
         });
-        
+       */ 
     }
 
     /**
@@ -75,7 +75,7 @@ namespace input {   //bloc entrée
     */
 
     
-    function getSonarDistance(unit: DistanceUnitSonar): number {
+    export function getSonarDistance(unit: DistanceUnitSonar): number {
 
         if (!sonar) {
             return -1;
@@ -102,7 +102,7 @@ namespace input {   //bloc entrée
     * @param unit unit of distance, eg: DistanceUnitSonar.Centimeter
     */
     
-    function isSonarDistanceLessThan(distance: number, unit: DistanceUnitSonar): boolean {
+    export function isSonarDistanceLessThan(distance: number, unit: DistanceUnitSonar): boolean {
         if (!sonar) {
             return false;
         } else {
@@ -115,7 +115,8 @@ namespace input {   //bloc entrée
     * Reset and trigger a pulse.
     */
     
-    function triggerPulse() {
+    export function triggerPulse() {
+        /*
         // Reset trigger pin
         pins.setPull(sonar.trig, PinPullMode.PullNone);
         pins.digitalWritePin(sonar.trig, 0);
@@ -125,6 +126,7 @@ namespace input {   //bloc entrée
         pins.digitalWritePin(sonar.trig, 1);
         control.waitMicros(10);
         pins.digitalWritePin(sonar.trig, 0);
+        */
     }
 
 
@@ -140,11 +142,11 @@ namespace input {   //bloc entrée
     //% parts="distance sonar"
     //% help=input/on-sonar-distance-condition-changed blockExternalInputs=0
     //% group="More" weight=76 color=#ff1493
-    function onSonarDistanceChanged(chevron: HigherOrLower, distance: number, unit: DistanceUnitSonar, handler: () => void): void {
+    export function onSonarDistanceChanged(chevron: HigherOrLower, distance: number, unit: DistanceUnitSonar, handler: () => void): void {
 
         triggerPulse();
         distance = getSonarDistance(unit);
-
+        /*
         if (chevron === HigherOrLower.Lower) {
             isSonarDistanceLessThan(distance, unit) = true;
         } 
@@ -152,6 +154,7 @@ namespace input {   //bloc entrée
         if (chevron === HigherOrLower.Higher) {
             isSonarDistanceLessThan(distance, unit) = false;
         }
+        */
     }
 }
 

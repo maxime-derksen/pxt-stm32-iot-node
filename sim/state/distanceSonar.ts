@@ -20,6 +20,7 @@ namespace pxsim {
         //% block="m"
         Meter = 3,
     }
+
 }
 
 namespace pxsim.input {
@@ -33,7 +34,7 @@ namespace pxsim.input {
     }
     
     interface Sonar {
-        trig: DigitalPin;
+        //trig: DigitalPin;
         roundTrips: SonarRoundTrip[];
         medianRoundTrip: number;
     }
@@ -49,8 +50,8 @@ namespace pxsim.input {
      */
     
 
-    export function connectSonar(trig: DigitalPin, echo: DigitalPin, unit: DistanceUnitSonar): void {
-        if (sonar) {
+    export function connectSonar(trig: 0, echo: 1, unit: DistanceUnitSonar): void {
+       /* if (sonar) {
             return;
         }
         
@@ -65,9 +66,10 @@ namespace pxsim.input {
                 sonar.roundTrips.push({ travel: input.runningTime(), rtn: pins.pulseDuration() });
             }
         });
-        
+        */
     }
 
+    
     /**
     * Returns the distance to an object in a range from 1 to 300 centimeters.
     * The maximum value is returned to indicate when no object was detected.
@@ -77,7 +79,8 @@ namespace pxsim.input {
 
     
     export function getSonarDistance(unit: DistanceUnitSonar): number {
-
+        return 0;
+        /*
         if (!sonar) {
             return -1;
         }
@@ -94,6 +97,7 @@ namespace pxsim.input {
             default:
                 return 0;
         }
+        */
     }
 
     /**
@@ -104,11 +108,14 @@ namespace pxsim.input {
     */
     
     export function isSonarDistanceLessThan(distance: number, unit: DistanceUnitSonar): boolean {
+        return true;
+        /*
         if (!sonar) {
             return false;
         } else {
             return Math.idiv(sonar.medianRoundTrip, unit) < distance;
         }
+        */
     }
 
 
@@ -117,19 +124,22 @@ namespace pxsim.input {
     */
     
     export function triggerPulse() {
+        /*
         // Reset trigger pin
         pins.setPull(sonar.trig, PinPullMode.PullNone);
-        pins.digitalWritePin(sonar.trig, 0);
+        pins.DigitalInOutPin(sonar.trig, 0);
         control.waitMicros(2);
     
         // Trigger pulse
         pins.digitalWritePin(sonar.trig, 1);
         control.waitMicros(10);
         pins.digitalWritePin(sonar.trig, 0);
+        */
     }
 
     export function onSonarDistanceChanged(chevron: HigherOrLower, distance: number, unit: DistanceUnitSonar, body: RefAction): void {
-       
+        console.log("coucou");
+       /*
         triggerPulse();
         distance = getSonarDistance(unit);
 
@@ -140,5 +150,6 @@ namespace pxsim.input {
         if (chevron === HigherOrLower.Higher) {
             isSonarDistanceLessThan(distance, unit) = false;
         }
+        */
     }
 }

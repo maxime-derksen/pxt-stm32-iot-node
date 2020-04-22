@@ -2,20 +2,10 @@
 /// <reference path="../../built/common-sim.d.ts"/>
 
 namespace pxsim {
+
     export class SonarState {
-        lines = 0;
-        columns = 0;
-        cursor: [number, number];
-        text: string[] = ["                ", "                "];
-        backLightColor: string = "#6e7d6e";
         
         public sensorUsed: boolean = false;
-
-        constructor(lines = 2, columns = 16) {
-            this.lines = lines;
-            this.columns = columns;
-            this.cursor = [0, 0];
-        }
 
         public setUsed() {
             if (!this.sensorUsed) {
@@ -26,10 +16,15 @@ namespace pxsim {
     }
 
     export interface SonarBoard extends CommonBoard {
-        sonarState: SonarState;
+        distanceSonarState: AnalogSensorState;
+        distanceUnitSonarState: DistanceUnitSonar;
     }
 
-    export function sonarState(): SonarState {
-        return (board() as SonarBoard).sonarState;
+    export function distanceSonarState(): AnalogSensorState {
+        return (board() as SonarBoard).distanceSonarState;
+    }
+
+    export function setDistanceUnitSonar(unit: DistanceUnitSonar) {
+        (board() as SonarBoard).distanceUnitSonarState = unit;
     }
 }

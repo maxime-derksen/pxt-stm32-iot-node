@@ -36,6 +36,7 @@ namespace pxsim.visuals {
             this.attachEvents();
         }
 
+        
         public moveToCoord(xy: Coord) {
             let btnWidth = PIN_DIST * 3;
             let [x, y] = xy;
