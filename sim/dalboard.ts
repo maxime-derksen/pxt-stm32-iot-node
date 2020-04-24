@@ -22,7 +22,7 @@ namespace pxsim {
         TemperatureBoard,
         HumidityBoard,
         PressureBoard,
-        DistanceBoard,
+        //DistanceBoard,
         SonarBoard,
         CompassBoard,
         AccelerometerBoard,
@@ -50,8 +50,8 @@ namespace pxsim {
         pressureState: AnalogSensorState;
         pressureUnitState: PressureUnit;
 
-        distanceState: AnalogSensorState;
-        distanceUnitState: DistanceUnit;
+        //distanceState: AnalogSensorState;
+        //distanceUnitState: DistanceUnit;
 
         distanceSonarState: AnalogSensorState;
         distanceUnitSonarState: DistanceUnitSonar;
@@ -128,8 +128,8 @@ namespace pxsim {
             this.pressureState = new AnalogSensorState(DAL.DEVICE_ID_PRESSURE, 980, 1050, 1000, 1030);
             this.pressureUnitState = PressureUnit.HectoPascal;
 
-            this.distanceState = new AnalogSensorState(DAL.DEVICE_ID_DISTANCE, 0, 2000, 300, 1000);
-            this.distanceUnitState = DistanceUnit.Millimeter;
+            //this.distanceState = new AnalogSensorState(DAL.DEVICE_ID_DISTANCE, 0, 2000, 300, 1000);
+            //this.distanceUnitState = DistanceUnit.Millimeter;
 
             this.lcdState = new LCDState();
 
@@ -186,8 +186,8 @@ namespace pxsim {
             this.builtinParts["pressure"] =  new PressureState(this.pressureState, this.pressureUnitState);
             this.builtinVisuals["pressure"] = () => new visuals.PressureView();
 
-            this.builtinParts["distance"] =  new DistanceState(this.distanceState, this.distanceUnitState);
-            this.builtinVisuals["distance"] = () => new visuals.DistanceView();
+            //this.builtinParts["distance"] =  new DistanceState(this.distanceState, this.distanceUnitState);
+            //this.builtinVisuals["distance"] = () => new visuals.DistanceView();
 
             this.builtinParts["distanceSonar"] =  new DistanceSonarState(this.distanceSonarState, this.distanceUnitSonarState);
             this.builtinVisuals["distanceSonar"] = () => new visuals.DistanceSonarView();

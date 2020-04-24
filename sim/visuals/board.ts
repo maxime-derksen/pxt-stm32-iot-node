@@ -44,6 +44,7 @@ namespace pxsim.visuals {
 }
 
 .sim-distance,
+.sim-sonar,
 .sim-humidity,
 .sim-pressure,
 .sim-thermometer {
@@ -71,6 +72,7 @@ namespace pxsim.visuals {
 .sim-pin:focus,
 .sim-thermometer:focus,
 .sim-distance:focus,
+.sim-sonar:focus,
 .sim-humidity:focus,
 .sim-pressure:focus,
 .sim-button-group:focus .sim-button-outer,
@@ -166,7 +168,8 @@ namespace pxsim.visuals {
         private onBoardThermometer: pxsim.visuals.ThermometerView;
         private onBoardHumidity: pxsim.visuals.HumidityView;
         private onBoardPressure: pxsim.visuals.PressureView;
-        private onBoardDistance: pxsim.visuals.DistanceView;
+        //private onBoardDistance: pxsim.visuals.DistanceView;
+        private onBoardSonar: pxsim.visuals.DistanceSonarView;
         private onBoardCompass: pxsim.visuals.CompassView;
         
 
@@ -200,7 +203,8 @@ namespace pxsim.visuals {
             this.onBoardThermometer = new ThermometerView();
             this.onBoardHumidity = new HumidityView();
             this.onBoardPressure = new PressureView();
-            this.onBoardDistance = new DistanceView();
+            //this.onBoardDistance = new DistanceView();
+            this.onBoardSonar = new DistanceSonarView();
             this.onBoardCompass = new CompassView();
 
             if (props && props.theme)
@@ -215,7 +219,8 @@ namespace pxsim.visuals {
             this.onBoardThermometer.init(this.board.bus, new ThermometerState(this.board.thermometerState, this.board.thermometerUnitState), el, null);
             this.onBoardHumidity.init(this.board.bus, new HumidityState(this.board.humidityState), el, null);
             this.onBoardPressure.init(this.board.bus, new PressureState(this.board.pressureState, this.board.pressureUnitState), el, null);
-            this.onBoardDistance.init(this.board.bus, new DistanceState(this.board.distanceState, this.board.distanceUnitState), el, null);
+            //this.onBoardDistance.init(this.board.bus, new DistanceState(this.board.distanceState, this.board.distanceUnitState), el, null);
+            this.onBoardSonar.init(this.board.bus, new DistanceSonarState(this.board.distanceSonarState, this.board.distanceUnitSonarState), el, null);
             this.onBoardCompass.init(this.board.bus, this.board.compassState, el, null);
 
         }
@@ -243,7 +248,8 @@ namespace pxsim.visuals {
             this.onBoardThermometer.updateState();
             this.onBoardHumidity.updateState();
             this.onBoardPressure.updateState();
-            this.onBoardDistance.updateState();
+            //this.onBoardDistance.updateState();
+            this.onBoardSonar.updateState();
             this.onBoardCompass.updateState();
             this.updateGestures();
         }

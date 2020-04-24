@@ -25,7 +25,7 @@ namespace pxsim.visuals {
        return { el: img, x: l, y: t, w: w, h: h };
    }
 
-   export class DistanceSonarView implements IBoardPart<DistanceState> {
+   export class DistanceSonarView implements IBoardPart<DistanceSonarState> {
        style: string;
        element: SVGElement;
        defs: SVGElement[];
@@ -36,17 +36,18 @@ namespace pxsim.visuals {
        private part: SVGElAndSize;
        private bus: EventBus;
 
-       private state: DistanceState;
+       private state: DistanceSonarState;
 
        constructor() {
        }
 
-       public init(bus: EventBus, state: DistanceState, svgEl: SVGSVGElement, otherParams: Map<string>): void {
-           this.state = state
-           this.bus = bus;
-           this.initDom();
-           this.updateState();
-          console.log("yes");
+       public init(bus: EventBus, state: DistanceSonarState, svgEl: SVGSVGElement, otherParams: Map<string>): void {
+            this.state = state;
+            this.bus = bus;
+            this.initDom();
+            this.updateState();
+            console.log("yes");
+          
        }
 
        initDom() {
@@ -74,7 +75,8 @@ namespace pxsim.visuals {
        public updateTheme() {
        }
 
-       public updateState() {
+      public updateState() {
+          /*
            for (let line = 0; line < this.state.lines; line++) {
                for (let column = 0; column < this.state.columns; column++) {
                    if(!!this.state.text && !!this.state.text[line] && !!this.state.text[line][column])
@@ -82,7 +84,7 @@ namespace pxsim.visuals {
                }  
            }
            this.backlight.style.fill = this.state.backLightColor;
-
+         */
        }
    }
 
@@ -95,7 +97,7 @@ namespace pxsim.visuals {
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:svg="http://www.w3.org/2000/svg"
   xmlns="http://www.w3.org/2000/svg"
-  id="sonar"
+  id="distanceSonar"
   height="208.97415"
   width="490.47632"
   version="1.1"
