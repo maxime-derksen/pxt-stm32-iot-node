@@ -48,7 +48,7 @@ namespace input {   //bloc entrée
      */
     
 
-    function connectSonar(trig: DigitalPin, echo: DigitalPin, unit: DistanceUnitSonar): void {
+    export function connectSonar(trig: DigitalPin, echo: DigitalPin, unit: DistanceUnitSonar): void {
         if (sonar) {
             return;
         }
@@ -143,9 +143,7 @@ namespace input {   //bloc entrée
     //% help=input/on-sonar-distance-condition-changed blockExternalInputs=0
     //% group="More" weight=76 color=#ff1493
     export function onSonarDistanceChanged(chevron: HigherOrLower, distance: number, unit: DistanceUnitSonar, handler: () => void): void {
-
-        triggerPulse();
-        distance = getSonarDistance(unit);
+        console.log("coucou");
         /*
         if (chevron === HigherOrLower.Lower) {
             isSonarDistanceLessThan(distance, unit) = true;

@@ -134,8 +134,6 @@ namespace pxsim.input {
     }
 
     export function onSonarDistanceChanged(chevron: HigherOrLower, distance: number, unit: DistanceUnitSonar, body: RefAction): void {
-        let b = distanceSonarState();
-        b.setUsed();
         console.log("coucou");
        /*
         triggerPulse();

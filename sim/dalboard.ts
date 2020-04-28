@@ -23,7 +23,7 @@ namespace pxsim {
         HumidityBoard,
         PressureBoard,
         //DistanceBoard,
-        SonarBoard,
+        DistanceSonarBoard,
         CompassBoard,
         AccelerometerBoard,
         LCDBoard,
@@ -191,6 +191,7 @@ namespace pxsim {
 
             this.builtinParts["distanceSonar"] =  new DistanceSonarState(this.distanceSonarState, this.distanceUnitSonarState);
             this.builtinVisuals["distanceSonar"] = () => new visuals.DistanceSonarView();
+            this.builtinPartVisuals["distanceSonar"] = (xy: visuals.Coord) => visuals.mkSonarPart(xy);
 
             this.builtinParts["lcd"] =  this.lcdState;
             this.builtinVisuals["lcd"] = () => new visuals.LCDView();

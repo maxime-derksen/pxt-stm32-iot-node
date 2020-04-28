@@ -3,7 +3,8 @@
 
 namespace pxsim {
 
-    export class SonarState {
+    export class DistanceSonarState {
+        constructor(public distanceSonarState: AnalogSensorState, public distanceUnitSonarState: DistanceUnitSonar) { }
         
         public sensorUsed: boolean = false;
 
@@ -14,17 +15,18 @@ namespace pxsim {
             }
         }
     }
+    
 
-    export interface SonarBoard extends CommonBoard {
+    export interface DistanceSonarBoard extends CommonBoard {
         distanceSonarState: AnalogSensorState;
         distanceUnitSonarState: DistanceUnitSonar;
     }
 
     export function distanceSonarState(): AnalogSensorState {
-        return (board() as SonarBoard).distanceSonarState;
+        return (board() as DistanceSonarBoard).distanceSonarState;
     }
 
     export function setDistanceUnitSonar(unit: DistanceUnitSonar) {
-        (board() as SonarBoard).distanceUnitSonarState = unit;
+        (board() as DistanceSonarBoard).distanceUnitSonarState = unit;
     }
 }
