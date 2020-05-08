@@ -85,7 +85,8 @@ namespace pxsim.visuals {
       public updateDistanceSonar() {
          let state = this.state;
             if (!state || !state.distanceSonarState || !state.distanceSonarState.sensorUsed)
-                return;
+               return;
+         console.log("updateDistanceSonar()");
             
             let t = Math.max(DistanceSonarView.dsmin, Math.min(DistanceSonarView.dsmax, state.distanceSonarState.getLevel()))
             let per = Math.floor((state.distanceSonarState.getLevel() - DistanceSonarView.dsmin) / (DistanceSonarView.dsmax - DistanceSonarView.dsmin) * 100)
@@ -106,7 +107,7 @@ namespace pxsim.visuals {
 
       public updateState() {
          
-         
+         console.log("updateState()");
          let state = this.state;
          if (!state || !state.distanceSonarState || !state.distanceSonarState.sensorUsed) {
             if (this.distanceSonar) {

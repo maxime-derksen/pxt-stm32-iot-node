@@ -1,3 +1,7 @@
+/// <reference path="../../node_modules/pxt-core/built/pxtsim.d.ts"/>
+/// <reference path="../../node_modules/pxt-core/localtypings/pxtarget.d.ts"/>
+/// <reference path="../../built/common-sim.d.ts"/>
+
 namespace pxsim {
     export enum HigherOrLower {
         //% block=">"
@@ -19,25 +23,9 @@ namespace pxsim {
 
 }
 
-namespace pxsim.input {
+namespace pxsim.input2 {
 
-    const MAX_SONAR_TRAVEL_TIME = 300 * DistanceUnitSonar.Centimeter;
-    const SONAR_MEASUREMENTS = 3;
-
-    interface SonarRoundTrip {
-        travel: number;     //travel
-        rtn: number;        //return
-    }
-    
-    interface Sonar {
-        //trig: DigitalPin;
-        roundTrips: SonarRoundTrip[];
-        medianRoundTrip: number;
-    }
-    
-    let sonar: Sonar;
-    
-
+   
     /**
      * Configures the sonar
      * @param trig tigger pin, eg: DigitalPin.P5
@@ -66,16 +54,42 @@ namespace pxsim.input {
     }
 
     
-    /**
-    * Returns the distance to an object in a range from 1 to 300 centimeters.
-    * The maximum value is returned to indicate when no object was detected.
-    * -1 is returned when the device is not connected.
-    * @param unit unit of distance (mm, cm, dm, m).
+     /**
+    * Get the distance.
     */
+   //% help=input/distance
+   //% blockId=device_sonar_distance block="distanceSonar in %unit"
+   //% parts="distanceSonar"
+   //% weight=26 color=#ff1493
 
     
     export function getSonarDistance(unit: DistanceUnitSonar): number {
-        return 0;
+        console.log("getSonarDistance()");
+        let b = distanceSonarState();
+        b.setUsed();
+
+        let distance = b.distanceSonarState.getLevel();
+        let d = distance;
+
+        switch (unit)
+        {
+            case DistanceUnitSonar.Millimeter:
+                d = distance;
+                break;
+            case DistanceUnitSonar.Centimeter:
+                d = distance * 10;
+                break;
+            case DistanceUnitSonar.Decimeter:
+                d = distance * 100;
+                break;
+            case DistanceUnitSonar.Meter:
+                d = distance * 1000;
+                break;
+            default:
+                d = 0;
+                break;
+        }
+        return d;
         /*
         if (!sonar) {
             return -1;
@@ -134,7 +148,7 @@ namespace pxsim.input {
     }
 
     export function onSonarDistanceChanged(condition: number, distance: number, unit: DistanceUnitSonar, body: RefAction): void {
-        console.log("coucou");
+        console.log("onSonarDistanceChanged()");
         let b = distanceSonarState();
         b.setUsed();
 
@@ -160,11 +174,11 @@ namespace pxsim.input {
         }
         
         if (condition === DAL.ANALOG_THRESHOLD_HIGH) {
-            b.setHighThreshold(d);
+            b.distanceSonarState.setHighThreshold(d);
         }
         else {
-            b.setLowThreshold(d);
+            b.distanceSonarState.setLowThreshold(d);
         }
-        pxtcore.registerWithDal(b.id, condition, body);
+        pxtcore.registerWithDal(b.distanceSonarState.id, condition, body);
     }
 }

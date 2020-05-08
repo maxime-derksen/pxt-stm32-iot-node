@@ -1,27 +1,11 @@
 /**
 * Different units available for the distance (mm, cm (ref), dm, m)
 */
-enum DistanceUnitSonar {   
-    //% block="mm"
-    Millimeter,
-    //% block="cm"
-    Centimeter = 58, // Duration of echo round-trip in Microseconds (uS) for two centimeters
-    //% block="dm"
-    Decimeter,
-    //% block="m"
-    Meter
-}
-
-enum HigherOrLower {
-    //% block=">"
-    Higher,
-    //% block="<"
-    Lower
-}
 
 
 
-namespace input {   //bloc entrée
+
+namespace input2 {   //bloc entrée
 
     const MAX_SONAR_TRAVEL_TIME = 300 * DistanceUnitSonar.Centimeter;
     const SONAR_MEASUREMENTS = 3;
@@ -67,14 +51,22 @@ namespace input {   //bloc entrée
        */ 
     }
 
-    /**
-    * Returns the distance to an object in a range from 1 to 300 centimeters.
-    * The maximum value is returned to indicate when no object was detected.
-    * -1 is returned when the device is not connected.
-    * @param unit unit of distance (mm, cm, dm, m).
-    */
 
-    
+
+    /**
+    * Get the distance.
+    */
+   //% help=input/distance
+   //% blockId=device_sonar_distance block="distanceSonar in %unit"
+   //% parts="distanceSonar"
+   //% weight=26 color=#ff1493
+   function getSonarDistance(unit: DistanceUnitSonar): number {
+       return 0;
+   }
+
+
+
+    /*
     export function getSonarDistance(unit: DistanceUnitSonar): number {
 
         if (!sonar) {
@@ -94,6 +86,7 @@ namespace input {   //bloc entrée
                 return 0;
         }
     }
+    */
 
     /**
     * Returns `true` if an object is within the specified distance. `false` otherwise.

@@ -220,7 +220,7 @@ namespace pxsim.visuals {
             this.onBoardHumidity.init(this.board.bus, new HumidityState(this.board.humidityState), el, null);
             this.onBoardPressure.init(this.board.bus, new PressureState(this.board.pressureState, this.board.pressureUnitState), el, null);
             //this.onBoardDistance.init(this.board.bus, new DistanceState(this.board.distanceState, this.board.distanceUnitState), el, null);
-            this.onBoardSonar.init(this.board.bus, new DistanceSonarState(this.board.distanceSonarState, this.board.distanceUnitSonarState), el, null);
+            this.onBoardSonar.init(this.board.bus, new DistanceSonarState(this.board.distanceSonarState.distanceSonarState, this.board.distanceUnitSonarState), el, null);
             this.onBoardCompass.init(this.board.bus, this.board.compassState, el, null);
 
         }

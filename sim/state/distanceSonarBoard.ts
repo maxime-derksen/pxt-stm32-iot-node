@@ -6,23 +6,20 @@ namespace pxsim {
     export class DistanceSonarState {
         constructor(public distanceSonarState: AnalogSensorState, public distanceUnitSonarState: DistanceUnitSonar) { }
         
-        public sensorUsed: boolean = false;
 
-        public setUsed() {
-            if (!this.sensorUsed) {
-                this.sensorUsed = true;
-                runtime.queueDisplayUpdate();
-            }
+        public setUsed(){
+            this.distanceSonarState.setUsed();
+            runtime.queueDisplayUpdate();
         }
     }
     
 
     export interface DistanceSonarBoard extends CommonBoard {
-        distanceSonarState: AnalogSensorState;
+        distanceSonarState: DistanceSonarState;
         distanceUnitSonarState: DistanceUnitSonar;
     }
 
-    export function distanceSonarState(): AnalogSensorState {
+    export function distanceSonarState(): DistanceSonarState {
         return (board() as DistanceSonarBoard).distanceSonarState;
     }
 
