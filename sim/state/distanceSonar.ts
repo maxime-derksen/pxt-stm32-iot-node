@@ -133,19 +133,38 @@ namespace pxsim.input {
         */
     }
 
-    export function onSonarDistanceChanged(chevron: HigherOrLower, distance: number, unit: DistanceUnitSonar, body: RefAction): void {
+    export function onSonarDistanceChanged(condition: number, distance: number, unit: DistanceUnitSonar, body: RefAction): void {
         console.log("coucou");
-       /*
-        triggerPulse();
-        distance = getSonarDistance(unit);
+        let b = distanceSonarState();
+        b.setUsed();
 
-        if (chevron === HigherOrLower.Lower) {
-            isSonarDistanceLessThan(distance, unit) = true;
-        } 
+        let d = distance;
 
-        if (chevron === HigherOrLower.Higher) {
-            isSonarDistanceLessThan(distance, unit) = false;
+        switch (unit)
+        {
+            case DistanceUnitSonar.Millimeter:
+                d = distance;
+                break;
+            case DistanceUnitSonar.Centimeter:
+                d = distance * 10;
+                break;
+            case DistanceUnitSonar.Decimeter:
+                d = distance * 100;
+                break;
+            case DistanceUnitSonar.Meter:
+                d = distance * 1000;
+                break;
+            default:
+                d = 0;
+                break;
         }
-        */
+        
+        if (condition === DAL.ANALOG_THRESHOLD_HIGH) {
+            b.setHighThreshold(d);
+        }
+        else {
+            b.setLowThreshold(d);
+        }
+        pxtcore.registerWithDal(b.id, condition, body);
     }
 }
