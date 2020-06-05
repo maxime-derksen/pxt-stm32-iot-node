@@ -1,17 +1,21 @@
-declare const enum DistanceUnitSonar {   
+declare const enum DistanceUnitWithTime {
     //% block="mm"
-    Millimeter,
+    Millimeter = 0,
     //% block="cm"
-    Centimeter = 58, // Duration of echo round-trip in Microseconds (uS) for two centimeters
+    Centimeter = 1,
     //% block="dm"
-    Decimeter,
+    Decimeter = 2,
     //% block="m"
-    Meter
+    Meter = 3,
+    //% block="ps"
+    PicoSecond = 4,
+    //% block="ns"
+    NanoSecond = 5,
+    //% block="µs"
+    MicroSecond = 6,
+    //% block="ms"
+    MilliSecond = 7,
+    //% block="s"
+    Second = 8,
 }
 
-declare const enum HigherOrLower {
-    //% block=">"
-    Higher,
-    //% block="<"
-    Lower
-}

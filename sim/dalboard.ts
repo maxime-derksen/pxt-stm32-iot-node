@@ -54,7 +54,7 @@ namespace pxsim {
         //distanceUnitState: DistanceUnit;
 
         distanceSonarState: DistanceSonarState;
-        distanceUnitSonarState: DistanceUnitSonar;
+        distanceUnitSonarState: DistanceUnitWithTime;
 
         storageState: StorageState;
 
@@ -133,9 +133,9 @@ namespace pxsim {
 
             this.lcdState = new LCDState();
 
-            this.distanceSonarState = new DistanceSonarState(new AnalogSensorState(DAL.DEVICE_ID_DISTANCE, 0, 2000, 300, 1000), DistanceUnitSonar.Centimeter);
-            //this.distanceSonarState.setUsed();
-            this.distanceUnitSonarState = DistanceUnitSonar.Centimeter;
+            this.distanceSonarState = new DistanceSonarState(new AnalogSensorState(DAL.DEVICE_ID_DISTANCE, 0, 2000, 300, 1000), DistanceUnitWithTime.Centimeter);
+            this.distanceSonarState.setUsed();
+            this.distanceUnitSonarState = DistanceUnitWithTime.Centimeter;
 
             this.bus.setNotify(DAL.DEVICE_ID_NOTIFY, DAL.DEVICE_ID_NOTIFY_ONE);
 

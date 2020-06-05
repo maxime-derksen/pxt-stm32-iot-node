@@ -1,54 +1,86 @@
-/**
-* Different units available for the distance (mm, cm (ref), dm, m)
-*/
-
-
-
-
-namespace input2 {   //bloc entrée
-
-    const MAX_SONAR_TRAVEL_TIME = 300 * DistanceUnitSonar.Centimeter;
-    const SONAR_MEASUREMENTS = 3;
-
-    interface SonarRoundTrip {
-        travel: number;     //travel
-        rtn: number;        //return
-    }
-    
-    interface Sonar {
-        trig: DigitalPin;
-        roundTrips: SonarRoundTrip[];
-        medianRoundTrip: number;
-    }
-    
-    let sonar: Sonar;
-    
-
+//% weight=100 color=#0fbc11 icon=""
+namespace DistanceSonar {
     /**
-     * Configures the sonar
-     * @param trig tigger pin, eg: DigitalPin.P5
-     * @param echo echo pin, eg: DigitalPin.P8
-     * @param unit desired conversion unit
+     * Get the distance.
      */
-    
-
-    export function connectSonar(trig: DigitalPin, echo: DigitalPin, unit: DistanceUnitSonar): void {
-        if (sonar) {
-            return;
+    //% block
+    //% blockId=distance_with_time block="distance (capteur ToF) en %unit"
+    //% parts="DistanceSonar"
+    //% weight=26
+    export function distanceWithTime(unit: DistanceUnitWithTime): number {
+        switch (unit) {
+            case DistanceUnitWithTime.Millimeter:
+                return input.distance(DistanceUnit.Millimeter);
+            case DistanceUnitWithTime.Centimeter:
+                return input.distance(DistanceUnit.Centimeter);
+            case DistanceUnitWithTime.Decimeter:
+                return input.distance(DistanceUnit.Decimeter);
+            case DistanceUnitWithTime.Meter:
+                return input.distance(DistanceUnit.Meter);
+            case DistanceUnitWithTime.PicoSecond:
+                return input.distance(DistanceUnit.Millimeter) * 3.335 * 2;
+            case DistanceUnitWithTime.NanoSecond:
+                return input.distance(DistanceUnit.Millimeter) * 3.335E-3 * 2;
+            case DistanceUnitWithTime.MicroSecond:
+                return input.distance(DistanceUnit.Millimeter) * 3.335E-6 * 2;
+            case DistanceUnitWithTime.MilliSecond:
+                return input.distance(DistanceUnit.Millimeter) * 3.335E-9 * 2;
+            case DistanceUnitWithTime.Second:
+                return input.distance(DistanceUnit.Millimeter) * 3.335E-12 * 2;
         }
-        
-        sonar = {
-            trig: trig,
-            roundTrips: [{ travel: 0, rtn: MAX_SONAR_TRAVEL_TIME }],
-            medianRoundTrip: MAX_SONAR_TRAVEL_TIME
-        };
-      /*
-        pins.onPulsed(echo, PulseValue.High, () => {
-            if (pins.pulseDuration() < MAX_SONAR_TRAVEL_TIME && sonar.roundTrips.length <= SONAR_MEASUREMENTS) {
-                sonar.roundTrips.push({ travel: input.runningTime(), rtn: pins.pulseDuration() });
-            }
-        });
-       */ 
+        return 0;
+    }
+
+    let TRIG: PwmPin = pins.D2;
+    let ECHO: PwmPin = pins.D3;
+
+    //% block
+    //% blockId=connect_sonar block="connecter le capteur Ultrason %TRIG_ %ECHO_"
+    //% parts="DistanceSonar"
+    //% weight=26
+    export function connectSonar(TRIG_: PwmPin, ECHO_: PwmPin) {
+        TRIG = TRIG_;
+        ECHO = ECHO_;
+    }
+
+    function timeSonarInUs(TRIG: PwmPin, ECHO: PwmPin) {
+        //TRIG.digitalWrite(true)
+        control.waitMicros(10)
+        //TRIG.digitalWrite(false)
+        let timeInUs = 0 //ECHO.pulseIn(PulseValue.High)
+        return timeInUs;
+    }
+
+    function timeSonar(unit: DistanceUnitWithTime): number {
+        let timeInUs = timeSonarInUs(TRIG, ECHO);
+        switch (unit) {
+            case DistanceUnitWithTime.PicoSecond:
+                return timeInUs * 1E6;
+            case DistanceUnitWithTime.NanoSecond:
+                return timeInUs * 1E3;;
+            case DistanceUnitWithTime.MicroSecond:
+                return timeInUs;
+            case DistanceUnitWithTime.MilliSecond:
+                return timeInUs * 1E-3;
+            case DistanceUnitWithTime.MilliSecond:
+                return timeInUs * 1E-6;
+        }
+        return -1;
+    }
+
+    function distanceSonar(unit: DistanceUnitWithTime): number {
+        let timeInUs = timeSonarInUs(TRIG, ECHO);
+        switch (unit) {
+            case DistanceUnitWithTime.Millimeter:
+                return timeInUs * 0.5 * 34029E-5;
+            case DistanceUnitWithTime.Centimeter:
+                return timeInUs * 0.5 * 34029E-6;
+            case DistanceUnitWithTime.Decimeter:
+                return timeInUs * 0.5 * 34029E-7;
+            case DistanceUnitWithTime.Meter:
+                return timeInUs * 0.5 * 34029E-8;
+        }
+        return -10;
     }
 
 
@@ -56,99 +88,27 @@ namespace input2 {   //bloc entrée
     /**
     * Get the distance.
     */
-   //% help=input/distance
-   //% blockId=device_sonar_distance block="distanceSonar in %unit"
-   //% parts="distanceSonar"
-   //% weight=26 color=#ff1493
-   function getSonarDistance(unit: DistanceUnitSonar): number {
-       return 0;
-   }
-
-
-
-    /*
-    export function getSonarDistance(unit: DistanceUnitSonar): number {
-
-        if (!sonar) {
-            return -1;
-        }
-    
+    //% block
+    //% blockId=distance_sonar_with_time block="distance (capteur Ultrason) en %unit"
+    //% parts="DistanceSonar"
+    //% weight=26
+    export function distanceSonarWithTime(unit: DistanceUnitWithTime): number {
         switch (unit) {
-            case DistanceUnitSonar.Centimeter:
-                return Math.idiv(sonar.medianRoundTrip, unit);
-            case DistanceUnitSonar.Millimeter:
-                return Math.idiv(sonar.medianRoundTrip, unit) * 10.;
-            case DistanceUnitSonar.Decimeter:
-                return Math.idiv(sonar.medianRoundTrip, unit) / 100.;
-            case DistanceUnitSonar.Meter:
-                return Math.idiv(sonar.medianRoundTrip, unit) / 1000.;
-            default:
-                return 0;
+            case DistanceUnitWithTime.PicoSecond:
+            case DistanceUnitWithTime.NanoSecond:
+            case DistanceUnitWithTime.MicroSecond:
+            case DistanceUnitWithTime.MilliSecond:
+            case DistanceUnitWithTime.MilliSecond:
+                return timeSonar(unit);
+            case DistanceUnitWithTime.Millimeter:
+            case DistanceUnitWithTime.Centimeter:
+            case DistanceUnitWithTime.Decimeter:
+            case DistanceUnitWithTime.Meter:
+                return distanceSonar(unit);
         }
-    }
-    */
-
-    /**
-    * Returns `true` if an object is within the specified distance. `false` otherwise.
-    *
-    * @param distance distance to object, eg: 10
-    * @param unit unit of distance, eg: DistanceUnitSonar.Centimeter
-    */
-    
-    export function isSonarDistanceLessThan(distance: number, unit: DistanceUnitSonar): boolean {
-        if (!sonar) {
-            return false;
-        } else {
-            return Math.idiv(sonar.medianRoundTrip, unit) < distance;
-        }
-    }
-
-
-    /**
-    * Reset and trigger a pulse.
-    */
-    
-    export function triggerPulse() {
-        /*
-        // Reset trigger pin
-        pins.setPull(sonar.trig, PinPullMode.PullNone);
-        pins.digitalWritePin(sonar.trig, 0);
-        control.waitMicros(2);
-    
-        // Trigger pulse
-        pins.digitalWritePin(sonar.trig, 1);
-        control.waitMicros(10);
-        pins.digitalWritePin(sonar.trig, 0);
-        */
-    }
-
-
-    
-
-     /**
-    * Run some code when the distance is more or less than the previous one.
-    * @param chevron higher or lower
-    * @param distance the distance at which this event happens, eg: 15
-    * @param unit the unit of the distance
-    */
-    //% blockId=input_on_sonar_distance_changed block="lorsque la distance du sonar est %chevron à %distance|%unit"
-    //% parts="distance sonar"
-    //% help=input/on-sonar-distance-condition-changed blockExternalInputs=0
-    //% group="More" weight=76 color=#ff1493
-    export function onSonarDistanceChanged(chevron: HigherOrLower, distance: number, unit: DistanceUnitSonar, handler: () => void): void {
-        console.log("coucou");
-        /*
-        if (chevron === HigherOrLower.Lower) {
-            isSonarDistanceLessThan(distance, unit) = true;
-        } 
-
-        if (chevron === HigherOrLower.Higher) {
-            isSonarDistanceLessThan(distance, unit) = false;
-        }
-        */
+        return -100;
     }
 }
-
 
     
 

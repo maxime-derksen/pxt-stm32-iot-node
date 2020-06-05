@@ -1,4 +1,4 @@
-declare namespace input2 {
+declare namespace DistanceSonar {
 
     /**
     * Get the distance.
@@ -7,7 +7,7 @@ declare namespace input2 {
    //% blockId=device_sonar_distance block="distanceSonar in %unit"
    //% parts="distanceSonar"
    //% weight=26 color=#ff1493
-    export function getSonarDistance(unit: DistanceUnitSonar): number;
+    export function getSonarDistance(unit: DistanceUnitWithTime): number;
 
     
 }

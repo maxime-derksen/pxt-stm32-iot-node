@@ -5,7 +5,9 @@
         "README.md",
         "distanceSonar.ts",
         "enums.d.ts",
-        "shims.d.ts"
+        "shims.d.ts",
+        "pxtparts.json",
+        "ns.ts"
     ],
     "testFiles": [
         "test.ts"

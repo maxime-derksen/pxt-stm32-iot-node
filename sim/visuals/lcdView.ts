@@ -54,7 +54,7 @@ namespace pxsim.visuals {
             _case.innerHTML = value.charAt(0);
         }
 
-        public moveToCoord(xy: Coord) {
+       public moveToCoord(xy: Coord) {
             translateEl(this.element, [xy[0], xy[1]]);
         }
 

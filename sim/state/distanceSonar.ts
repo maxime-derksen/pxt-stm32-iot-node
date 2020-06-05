@@ -3,14 +3,7 @@
 /// <reference path="../../built/common-sim.d.ts"/>
 
 namespace pxsim {
-    export enum HigherOrLower {
-        //% block=">"
-        Higher = 2,  // SENSOR_THRESHOLD_HIGH
-        //% block="near"
-        Lower = 1,  // SENSOR_THRESHOLD_LOW
-    }
-    
-    export const enum DistanceUnitSonar {
+    export enum DistanceUnitWithTime {
         //% block="mm"
         Millimeter = 0,
         //% block="cm"
@@ -19,50 +12,25 @@ namespace pxsim {
         Decimeter = 2,
         //% block="m"
         Meter = 3,
+        //% block="ps"
+        PicoSecond = 4,
+        //% block="ns"
+        NanoSecond = 5,
+        //% block="µs"
+        MicroSecond = 6,
+        //% block="ms"
+        MilliSecond = 7,
+        //% block="s"
+        Second = 8,
     }
 
 }
 
-namespace pxsim.input2 {
-
-   
-    /**
-     * Configures the sonar
-     * @param trig tigger pin, eg: DigitalPin.P5
-     * @param echo echo pin, eg: DigitalPin.P8
-     * @param unit desired conversion unit
-     */
-    
-
-    export function connectSonar(trig: 0, echo: 1, unit: DistanceUnitSonar): void {
-       /* if (sonar) {
-            return;
-        }
-        
-        sonar = {
-            trig: trig,
-            roundTrips: [{ travel: 0, rtn: MAX_SONAR_TRAVEL_TIME }],
-            medianRoundTrip: MAX_SONAR_TRAVEL_TIME
-        };
-      
-        pins.onPulsed(echo, PulseValue.High, () => {
-            if (pins.pulseDuration() < MAX_SONAR_TRAVEL_TIME && sonar.roundTrips.length <= SONAR_MEASUREMENTS) {
-                sonar.roundTrips.push({ travel: input.runningTime(), rtn: pins.pulseDuration() });
-            }
-        });
-        */
-    }
+namespace pxsim.DistanceSonar {
 
     
-     /**
-    * Get the distance.
-    */
-   //% help=input/distance
-   //% blockId=device_sonar_distance block="distanceSonar in %unit"
-   //% parts="distanceSonar"
-   //% weight=26 color=#ff1493
 
-    
+    /*
     export function getSonarDistance(unit: DistanceUnitSonar): number {
         console.log("getSonarDistance()");
         let b = distanceSonarState();
@@ -70,71 +38,78 @@ namespace pxsim.input2 {
 
         let distance = b.distanceSonarState.getLevel();
         let d = distance;
-
-        switch (unit)
-        {
-            case DistanceUnitSonar.Millimeter:
-                d = distance;
-                break;
-            case DistanceUnitSonar.Centimeter:
-                d = distance * 10;
-                break;
-            case DistanceUnitSonar.Decimeter:
-                d = distance * 100;
-                break;
-            case DistanceUnitSonar.Meter:
-                d = distance * 1000;
-                break;
-            default:
-                d = 0;
-                break;
-        }
-        return d;
-        /*
-        if (!sonar) {
-            return -1;
-        }
+    */
     
+
+
+  
+    export function distanceWithTime(unit: DistanceUnitWithTime): number {
+        console.log("getSonarDistance()");
+        let b = distanceSonarState();
+        b.setUsed();
+
         switch (unit) {
-            case DistanceUnitSonar.Centimeter:
-                return Math.idiv(sonar.medianRoundTrip, unit);
-            case DistanceUnitSonar.Millimeter:
-                return Math.idiv(sonar.medianRoundTrip, unit) * 10.;
-            case DistanceUnitSonar.Decimeter:
-                return Math.idiv(sonar.medianRoundTrip, unit) / 100.;
-            case DistanceUnitSonar.Meter:
-                return Math.idiv(sonar.medianRoundTrip, unit) / 1000.;
-            default:
-                return 0;
+            case DistanceUnitWithTime.Millimeter:
+                return input.distance(DistanceUnit.Millimeter);
+            case DistanceUnitWithTime.Centimeter:
+                return input.distance(DistanceUnit.Centimeter);
+            case DistanceUnitWithTime.Decimeter:
+                return input.distance(DistanceUnit.Decimeter);
+            case DistanceUnitWithTime.Meter:
+                return input.distance(DistanceUnit.Meter);
+            case DistanceUnitWithTime.PicoSecond:
+                return input.distance(DistanceUnit.Millimeter) * 3.335 * 2;
+            case DistanceUnitWithTime.NanoSecond:
+                return input.distance(DistanceUnit.Millimeter) * 3.335E-3 * 2;
+            case DistanceUnitWithTime.MicroSecond:
+                return input.distance(DistanceUnit.Millimeter) * 3.335E-6 * 2;
+            case DistanceUnitWithTime.MilliSecond:
+                return input.distance(DistanceUnit.Millimeter) * 3.335E-9 * 2;
+            case DistanceUnitWithTime.Second:
+                return input.distance(DistanceUnit.Millimeter) * 3.335E-12 * 2;
         }
-        */
+        return 0;
     }
 
-    /**
-    * Returns `true` if an object is within the specified distance. `false` otherwise.
-    *
-    * @param distance distance to object, eg: 10
-    * @param unit unit of distance, eg: DistanceUnitSonar.Centimeter
+
+    /*
+    let TRIG: PwmPin = pins.D2;
+    let ECHO: PwmPin = pins.D3;
+
+    export function connectSonar(TRIG_: PwmPin, ECHO_: PwmPin) {
+        console.log("connectSonar()");
+        let b = distanceSonarState();
+        b.setUsed();
+        TRIG = TRIG_;
+        ECHO = ECHO_;
+    }
     */
+
+
+    
+
+
+    /*
     
     export function isSonarDistanceLessThan(distance: number, unit: DistanceUnitSonar): boolean {
         return true;
-        /*
+        
         if (!sonar) {
             return false;
         } else {
             return Math.idiv(sonar.medianRoundTrip, unit) < distance;
         }
-        */
+        
     }
+    
 
 
     /**
     * Reset and trigger a pulse.
-    */
+    
     
     export function triggerPulse() {
-        /*
+        
         // Reset trigger pin
         pins.setPull(sonar.trig, PinPullMode.PullNone);
         pins.DigitalInOutPin(sonar.trig, 0);
@@ -144,10 +119,11 @@ namespace pxsim.input2 {
         pins.digitalWritePin(sonar.trig, 1);
         control.waitMicros(10);
         pins.digitalWritePin(sonar.trig, 0);
-        */
+        
     }
 
-    export function onSonarDistanceChanged(condition: number, distance: number, unit: DistanceUnitSonar, body: RefAction): void {
+    
+    export function onSonarDistanceChanged(condition: number, distance: number, unit: DistanceU, body: RefAction): void {
         console.log("onSonarDistanceChanged()");
         let b = distanceSonarState();
         b.setUsed();
@@ -181,4 +157,5 @@ namespace pxsim.input2 {
         }
         pxtcore.registerWithDal(b.distanceSonarState.id, condition, body);
     }
+    */
 }
