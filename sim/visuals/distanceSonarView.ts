@@ -21,6 +21,7 @@ namespace pxsim.visuals {
    export class DistanceSonarView implements IBoardPart<DistanceSonarState> {
       public style = BUTTON_PAIR_STYLE;
       public element: SVGElement;
+      
       public svgEl: SVGSVGElement;
       public defs: SVGElement[];
       public image: SVGSVGElement;

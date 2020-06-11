@@ -1,53 +1,56 @@
+
+
 //% weight=100 color=#0fbc11 icon=""
 namespace DistanceSonar {
-    /**
-     * Get the distance.
-     */
-    //% block
-    //% blockId=distance_with_time block="distance (capteur ToF) en %unit"
-    //% parts="DistanceSonar"
-    //% weight=26
-    export function distanceWithTime(unit: DistanceUnitWithTime): number {
-        switch (unit) {
-            case DistanceUnitWithTime.Millimeter:
-                return input.distance(DistanceUnit.Millimeter);
-            case DistanceUnitWithTime.Centimeter:
-                return input.distance(DistanceUnit.Centimeter);
-            case DistanceUnitWithTime.Decimeter:
-                return input.distance(DistanceUnit.Decimeter);
-            case DistanceUnitWithTime.Meter:
-                return input.distance(DistanceUnit.Meter);
-            case DistanceUnitWithTime.PicoSecond:
-                return input.distance(DistanceUnit.Millimeter) * 3.335 * 2;
-            case DistanceUnitWithTime.NanoSecond:
-                return input.distance(DistanceUnit.Millimeter) * 3.335E-3 * 2;
-            case DistanceUnitWithTime.MicroSecond:
-                return input.distance(DistanceUnit.Millimeter) * 3.335E-6 * 2;
-            case DistanceUnitWithTime.MilliSecond:
-                return input.distance(DistanceUnit.Millimeter) * 3.335E-9 * 2;
-            case DistanceUnitWithTime.Second:
-                return input.distance(DistanceUnit.Millimeter) * 3.335E-12 * 2;
-        }
-        return 0;
-    }
 
-    let TRIG: PwmPin = pins.D2;
-    let ECHO: PwmPin = pins.D3;
+    let connected = false;
+    let TRIG: DigitalPin;
+    let ECHO: DigitalPin;
 
     //% block
     //% blockId=connect_sonar block="connecter le capteur Ultrason %TRIG_ %ECHO_"
     //% parts="DistanceSonar"
     //% weight=26
-    export function connectSonar(TRIG_: PwmPin, ECHO_: PwmPin) {
+    export function connectSonar(TRIG_: DigitalPin, ECHO_: DigitalPin) {
         TRIG = TRIG_;
         ECHO = ECHO_;
+        connected = true;
     }
 
-    function timeSonarInUs(TRIG: PwmPin, ECHO: PwmPin) {
-        //TRIG.digitalWrite(true)
-        control.waitMicros(10)
-        //TRIG.digitalWrite(false)
-        let timeInUs = 0 //ECHO.pulseIn(PulseValue.High)
+
+    /**
+    * Get the distance.
+    */
+    //% block
+    //% blockId=distance_sonar_with_time block="distance (capteur Ultrason) en %unit"
+    //% parts="DistanceSonar"
+    //% weight=26
+    export function distanceSonarWithTime(unit: DistanceUnitWithTime): number {
+        if (connected === true) {
+            switch (unit) {
+                case DistanceUnitWithTime.PicoSecond:
+                case DistanceUnitWithTime.NanoSecond:
+                case DistanceUnitWithTime.MicroSecond:
+                case DistanceUnitWithTime.MilliSecond:
+                case DistanceUnitWithTime.MilliSecond:
+                    return timeSonar(unit);
+                case DistanceUnitWithTime.Millimeter:
+                case DistanceUnitWithTime.Centimeter:
+                case DistanceUnitWithTime.Decimeter:
+                case DistanceUnitWithTime.Meter:
+                    return distanceSonar(unit);
+            }
+            return -100;
+        }
+        return 0;
+    }
+
+
+    function timeSonarInUs(TRIG_: DigitalPin, ECHO_: DigitalPin) {
+        TRIG_.digitalWrite(true);
+        control.waitMicros(10);
+        TRIG_.digitalWrite(false);
+        let timeInUs = ECHO_.pulseIn(PulseValue.High);
         return timeInUs;
     }
 
@@ -85,29 +88,7 @@ namespace DistanceSonar {
 
 
 
-    /**
-    * Get the distance.
-    */
-    //% block
-    //% blockId=distance_sonar_with_time block="distance (capteur Ultrason) en %unit"
-    //% parts="DistanceSonar"
-    //% weight=26
-    export function distanceSonarWithTime(unit: DistanceUnitWithTime): number {
-        switch (unit) {
-            case DistanceUnitWithTime.PicoSecond:
-            case DistanceUnitWithTime.NanoSecond:
-            case DistanceUnitWithTime.MicroSecond:
-            case DistanceUnitWithTime.MilliSecond:
-            case DistanceUnitWithTime.MilliSecond:
-                return timeSonar(unit);
-            case DistanceUnitWithTime.Millimeter:
-            case DistanceUnitWithTime.Centimeter:
-            case DistanceUnitWithTime.Decimeter:
-            case DistanceUnitWithTime.Meter:
-                return distanceSonar(unit);
-        }
-        return -100;
-    }
+
 }
 
     

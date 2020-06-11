@@ -134,7 +134,7 @@ namespace pxsim {
             this.lcdState = new LCDState();
 
             this.distanceSonarState = new DistanceSonarState(new AnalogSensorState(DAL.DEVICE_ID_DISTANCE, 0, 2000, 300, 1000), DistanceUnitWithTime.Centimeter);
-            this.distanceSonarState.setUsed();
+            //this.distanceSonarState.setUsed();
             this.distanceUnitSonarState = DistanceUnitWithTime.Centimeter;
 
             this.bus.setNotify(DAL.DEVICE_ID_NOTIFY, DAL.DEVICE_ID_NOTIFY_ONE);
@@ -190,7 +190,7 @@ namespace pxsim {
             //this.builtinParts["distance"] =  new DistanceState(this.distanceState, this.distanceUnitState);
             //this.builtinVisuals["distance"] = () => new visuals.DistanceView();
 
-            this.builtinParts["distanceSonar"] =  new DistanceSonarState(this.distanceSonarState.distanceSonarState, this.distanceUnitSonarState);
+            this.builtinParts["distanceSonar"] = this.distanceSonarState;
             this.builtinVisuals["distanceSonar"] = () => new visuals.DistanceSonarView();
             this.builtinPartVisuals["distanceSonar"] = (xy: visuals.Coord) => visuals.mkSonarPart(xy);
 

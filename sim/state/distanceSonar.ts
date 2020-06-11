@@ -2,6 +2,9 @@
 /// <reference path="../../node_modules/pxt-core/localtypings/pxtarget.d.ts"/>
 /// <reference path="../../built/common-sim.d.ts"/>
 
+
+
+
 namespace pxsim {
     export enum DistanceUnitWithTime {
         //% block="mm"
@@ -28,66 +31,123 @@ namespace pxsim {
 
 namespace pxsim.DistanceSonar {
 
+    let connected = false;
+    /*
+    let TRIG: Pin;
+    let ECHO: Pin;
+    */
+
+
+    export function connectSonar(TRIG_: Pin, ECHO_: Pin) {
+        console.log("connectSonar()");
+        let b = distanceSonarState();
+        b.setUsed();
+        connected = true;
+    }
+
+    /**
+    * Get the distance.
+    */
+    //% block
+    //% blockId=distance_sonar_with_time block="distance (capteur Ultrason) en %unit"
+    //% parts="DistanceSonar"
+    //% weight=26
+    export function distanceSonarWithTime(unit: DistanceUnitWithTime): number {
+        console.log("getSonarDistance()");
+        let b = distanceSonarState();
+        b.setUsed();
+
+        if (connected === true) {
+            switch (unit) {
+                case DistanceUnitWithTime.PicoSecond:
+                case DistanceUnitWithTime.NanoSecond:
+                case DistanceUnitWithTime.MicroSecond:
+                case DistanceUnitWithTime.MilliSecond:
+                case DistanceUnitWithTime.MilliSecond:
+                    return timeSonar(unit);
+                case DistanceUnitWithTime.Millimeter:
+                case DistanceUnitWithTime.Centimeter:
+                case DistanceUnitWithTime.Decimeter:
+                case DistanceUnitWithTime.Meter:
+                    return distanceSonar(unit);
+            }
+            return -100;
+        }
+        return 0;
+    }
+
+
+    
+    function timeSonar(unit: DistanceUnitWithTime): number {
+        
+        let b = distanceSonarState();
+        b.setUsed();
+        const timeSonar = b.distanceSonarState.getLevel();
+        
+        switch (unit) {
+            case DistanceUnitWithTime.PicoSecond:
+                return timeSonar * 1E6;
+            case DistanceUnitWithTime.NanoSecond:
+                return timeSonar * 1E3;;
+            case DistanceUnitWithTime.MicroSecond:
+                return timeSonar;
+            case DistanceUnitWithTime.MilliSecond:
+                return timeSonar * 1E-3;
+            case DistanceUnitWithTime.MilliSecond:
+                return timeSonar * 1E-6;
+        }
+        return -1;
+    }
+
+    function distanceSonar(unit: DistanceUnitWithTime): number {
+
+        let b = distanceSonarState();
+        b.setUsed();
+        const timeSonar = b.distanceSonarState.getLevel();
+
+        switch (unit) {
+            case DistanceUnitWithTime.Millimeter:
+                return timeSonar * 0.5 * 34029E-5;
+            case DistanceUnitWithTime.Centimeter:
+                return timeSonar * 0.5 * 34029E-6;
+            case DistanceUnitWithTime.Decimeter:
+                return timeSonar * 0.5 * 34029E-7;
+            case DistanceUnitWithTime.Meter:
+                return timeSonar * 0.5 * 34029E-8;
+        }
+        return -10;
+    }
+
+
+
+
     
 
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
     /*
-    export function getSonarDistance(unit: DistanceUnitSonar): number {
+    export function getSonarDistance(unit: DistanceUnitWithTime): number {
         console.log("getSonarDistance()");
         let b = distanceSonarState();
         b.setUsed();
 
         let distance = b.distanceSonarState.getLevel();
         let d = distance;
-    */
-    
-
-
-  
-    export function distanceWithTime(unit: DistanceUnitWithTime): number {
-        console.log("getSonarDistance()");
-        let b = distanceSonarState();
-        b.setUsed();
-
-        switch (unit) {
-            case DistanceUnitWithTime.Millimeter:
-                return input.distance(DistanceUnit.Millimeter);
-            case DistanceUnitWithTime.Centimeter:
-                return input.distance(DistanceUnit.Centimeter);
-            case DistanceUnitWithTime.Decimeter:
-                return input.distance(DistanceUnit.Decimeter);
-            case DistanceUnitWithTime.Meter:
-                return input.distance(DistanceUnit.Meter);
-            case DistanceUnitWithTime.PicoSecond:
-                return input.distance(DistanceUnit.Millimeter) * 3.335 * 2;
-            case DistanceUnitWithTime.NanoSecond:
-                return input.distance(DistanceUnit.Millimeter) * 3.335E-3 * 2;
-            case DistanceUnitWithTime.MicroSecond:
-                return input.distance(DistanceUnit.Millimeter) * 3.335E-6 * 2;
-            case DistanceUnitWithTime.MilliSecond:
-                return input.distance(DistanceUnit.Millimeter) * 3.335E-9 * 2;
-            case DistanceUnitWithTime.Second:
-                return input.distance(DistanceUnit.Millimeter) * 3.335E-12 * 2;
-        }
-        return 0;
     }
-
-
-    /*
-    let TRIG: PwmPin = pins.D2;
-    let ECHO: PwmPin = pins.D3;
-
-    export function connectSonar(TRIG_: PwmPin, ECHO_: PwmPin) {
-        console.log("connectSonar()");
-        let b = distanceSonarState();
-        b.setUsed();
-        TRIG = TRIG_;
-        ECHO = ECHO_;
-    }
-    */
-
-
     
-
 
     /*
     
